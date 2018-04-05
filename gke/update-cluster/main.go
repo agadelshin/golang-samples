@@ -8,9 +8,7 @@ import (
 
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/container/v1"
-
 )
-
 
 func NewClient(ctx context.Context) (*container.Service, error) {
 	hc, err := google.DefaultClient(ctx, container.CloudPlatformScope)
@@ -31,17 +29,16 @@ func main() {
 	ctx := context.Background()
 	svc, err := NewClient(ctx)
 
-
 	projectID, ok := os.LookupEnv("GKE_PROJECT_ID")
-	if ! ok {
+	if !ok {
 		log.Fatal("set GKE_PROJECT_ID")
 	}
 	zone, ok := os.LookupEnv("GKE_ZONE")
-	if ! ok {
+	if !ok {
 		log.Fatal("set GKE_ZONE")
 	}
 	clusterID, ok := os.LookupEnv("GKE_CLUSTER_ID")
-	if ! ok {
+	if !ok {
 		log.Fatal("set GKE_CLUSTER_ID")
 	}
 
@@ -57,7 +54,6 @@ func main() {
 
 	fmt.Printf("Cluster %q (%s) master_version: v%s, node_count: %d\n", cl.Name, cl.Status,
 		cl.CurrentMasterVersion, cl.CurrentNodeCount)
-
 
 	upRequest := container.UpdateClusterRequest{
 		Name: fmt.Sprintf("projects/%s/locations/%s/clusters/%s", projectID, zone, clusterID),

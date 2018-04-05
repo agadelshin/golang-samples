@@ -6,11 +6,10 @@ import (
 	"log"
 	"os"
 
+	"github.com/hashicorp/go-version"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/container/v1"
-	"github.com/hashicorp/go-version"
 )
-
 
 func NewClient(ctx context.Context) (*container.Service, error) {
 	hc, err := google.DefaultClient(ctx, container.CloudPlatformScope)
@@ -31,17 +30,16 @@ func main() {
 	ctx := context.Background()
 	svc, err := NewClient(ctx)
 
-
 	projectID, ok := os.LookupEnv("GKE_PROJECT_ID")
-	if ! ok {
+	if !ok {
 		log.Fatal("set GKE_PROJECT_ID")
 	}
 	zone, ok := os.LookupEnv("GKE_ZONE")
-	if ! ok {
+	if !ok {
 		log.Fatal("set GKE_ZONE")
 	}
 	clusterID, ok := os.LookupEnv("GKE_CLUSTER_ID")
-	if ! ok {
+	if !ok {
 		log.Fatal("set GKE_CLUSTER_ID")
 	}
 
@@ -72,14 +70,13 @@ func main() {
 		fmt.Printf("\tNodePool %q (%s), np_version: v%s, labels: %v, need_to_upgrade: %t\n",
 			np.Name, np.Status, np.Version, np.Config.Labels, nodeVersion.LessThan(masterVersion))
 
-
 	}
 
 	if len(nodePoolID) > 0 {
 		upRequest := container.UpdateClusterRequest{
 			Name: fmt.Sprintf("projects/%s/locations/%s/clusters/%s", projectID, zone, clusterID),
 			Update: &container.ClusterUpdate{
-				DesiredNodePoolId: nodePoolID,
+				DesiredNodePoolId:  nodePoolID,
 				DesiredNodeVersion: "latest",
 			},
 		}
@@ -92,6 +89,5 @@ func main() {
 
 		fmt.Printf("We're going to %s, status %s, id: %s\n", op.OperationType, op.Status, op.Name)
 	}
-
 
 }
