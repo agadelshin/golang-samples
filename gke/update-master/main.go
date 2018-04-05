@@ -68,18 +68,24 @@ func main() {
 		log.Fatal("failed to get server config")
 	}
 
+	versionToUpdate := "latest"
+
 	latestMasterVersion, _ := version.NewVersion(sc.ValidMasterVersions[0])
 	currentMasterVersion, _ := version.NewVersion(cl.CurrentMasterVersion)
 
+	if (latestMasterVersion.Segments()[1] - currentMasterVersion.Segments()[1]) > 1 {
+		versionToUpdate = fmt.Sprintf("%d.%d", currentMasterVersion.Segments()[0], currentMasterVersion.Segments()[1] + 1)
+	}
+
 	if currentMasterVersion.LessThan(latestMasterVersion) {
 
-		fmt.Printf("Available latest version: %s, current version: %s\n", sc.ValidMasterVersions[0], cl.CurrentMasterVersion)
+		fmt.Printf("Available version: %s, current version: %s\n", versionToUpdate, cl.CurrentMasterVersion)
 
 		if len(forceUpdate) > 0 {
 			upRequest := container.UpdateClusterRequest{
 				Name: fmt.Sprintf("projects/%s/locations/%s/clusters/%s", projectID, zone, clusterID),
 				Update: &container.ClusterUpdate{
-					DesiredMasterVersion: "latest",
+					DesiredMasterVersion: versionToUpdate,
 				},
 			}
 

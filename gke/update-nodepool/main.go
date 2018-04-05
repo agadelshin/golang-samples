@@ -55,8 +55,16 @@ func main() {
 		log.Fatal(err)
 	}
 
+
+
 	fmt.Printf("Cluster %q (%s) master_version: v%s, node_count: %d\n", cl.Name, cl.Status,
 		cl.CurrentMasterVersion, cl.CurrentNodeCount)
+
+	ops, err := svc.Projects.Zones.Operations.List(projectID, zone).Do()
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	masterVersion, err := version.NewVersion(cl.CurrentMasterVersion)
 
@@ -71,13 +79,32 @@ func main() {
 			np.Name, np.Status, np.Version, np.Config.Labels, nodeVersion.LessThan(masterVersion))
 
 	}
-	
+
+	opsInProgress := make([]*container.Operation, 0)
+
+	for _, op := range ops.Operations {
+		if op.Status != "DONE" {
+			opsInProgress = append(opsInProgress, op)
+		}
+	}
+
+	if len(opsInProgress) > 0 {
+		for _, op := range opsInProgress {
+			fmt.Printf("Operation in progress id: %s, type: %s, status: %s\n", op.Name, op.OperationType, op.Status)
+		}
+
+		if len(nodePoolID) > 0 {
+			fmt.Println("Skipping upgrade")
+		}
+		return
+	}
+
 	if len(nodePoolID) > 0 {
 		upRequest := container.UpdateClusterRequest{
 			Name: fmt.Sprintf("projects/%s/locations/%s/clusters/%s", projectID, zone, clusterID),
 			Update: &container.ClusterUpdate{
 				DesiredNodePoolId:  nodePoolID,
-				DesiredNodeVersion: "latest",
+				DesiredNodeVersion: cl.CurrentMasterVersion,
 			},
 		}
 
