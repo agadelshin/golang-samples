@@ -59,7 +59,7 @@ func main() {
 		cl.CurrentMasterVersion, cl.CurrentNodeCount)
 
 	masterVersion, err := version.NewVersion(cl.CurrentMasterVersion)
-	
+
 	for _, np := range cl.NodePools {
 		nodeVersion, err := version.NewVersion(np.Version)
 		if err != nil {
@@ -71,9 +71,7 @@ func main() {
 			np.Name, np.Status, np.Version, np.Config.Labels, nodeVersion.LessThan(masterVersion))
 
 	}
-
-	fmt.Println()
-
+	
 	if len(nodePoolID) > 0 {
 		upRequest := container.UpdateClusterRequest{
 			Name: fmt.Sprintf("projects/%s/locations/%s/clusters/%s", projectID, zone, clusterID),
