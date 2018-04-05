@@ -62,7 +62,6 @@ func main() {
 		log.Fatal("Failed to parse master version")
 	}
 
-
 	ops, err := svc.Projects.Zones.Operations.List(projectID, zone).Do()
 
 	if err != nil {
@@ -95,7 +94,7 @@ func main() {
 	currentMasterVersion, _ := version.NewVersion(cl.CurrentMasterVersion)
 
 	if (latestMasterVersion.Segments()[1] - currentMasterVersion.Segments()[1]) > 1 {
-		versionToUpdate = fmt.Sprintf("%d.%d", currentMasterVersion.Segments()[0], currentMasterVersion.Segments()[1] + 1)
+		versionToUpdate = fmt.Sprintf("%d.%d", currentMasterVersion.Segments()[0], currentMasterVersion.Segments()[1]+1)
 	}
 
 	if currentMasterVersion.LessThan(latestMasterVersion) {
