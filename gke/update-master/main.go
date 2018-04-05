@@ -62,6 +62,27 @@ func main() {
 		log.Fatal("Failed to parse master version")
 	}
 
+
+	ops, err := svc.Projects.Zones.Operations.List(projectID, zone).Do()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	opsInProgress := make([]*container.Operation, 0)
+
+	for _, op := range ops.Operations {
+		if op.Status != "DONE" {
+			opsInProgress = append(opsInProgress, op)
+		}
+	}
+
+	if len(opsInProgress) > 0 {
+		for _, op := range opsInProgress {
+			fmt.Printf("Operation in progress id: %s, type: %s, status: %s\n", op.Name, op.OperationType, op.Status)
+		}
+		return
+	}
 	sc, err := svc.Projects.Zones.GetServerconfig(projectID, zone).Do()
 
 	if err != nil {
