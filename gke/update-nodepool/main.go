@@ -55,8 +55,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-
-
 	fmt.Printf("Cluster %q (%s) master_version: v%s, node_count: %d\n", cl.Name, cl.Status,
 		cl.CurrentMasterVersion, cl.CurrentNodeCount)
 
