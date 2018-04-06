@@ -23,7 +23,6 @@ func NewClient(ctx context.Context) (*container.Service, error) {
 	}
 
 	return svc, nil
-
 }
 
 func main() {
@@ -123,3 +122,4 @@ func main() {
 	}
 
 }
+
