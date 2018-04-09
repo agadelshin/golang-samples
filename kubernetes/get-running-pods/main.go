@@ -76,7 +76,7 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	
+
 	for _, pod := range pods.Items {
 		fmt.Println(pod.Name)
 	}

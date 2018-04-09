@@ -1,10 +1,11 @@
+sudo: required
 language: go
-go:
-- '1.8'
-- 1.10.x
-- master
+service:
+  - docker
+
 install: true
-script: make -C gke/get-host-public-ip
+script: docker run -v `pwd`/gke/get-host-public-ip:/go/src/github.com/pondohva/gke/get-host-public-ip golang:alpine sh -c "apk update && apk add make && make -C /go/src/github.com/pondohva/gke/get-host-public-ip"
+
 deploy:
   provider: releases
   api_key:
