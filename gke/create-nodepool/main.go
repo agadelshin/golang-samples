@@ -62,6 +62,7 @@ func main() {
 			Config: &container.NodeConfig{
 				MachineType: machineType,
 			},
+			Version: "latest",
 		},
 	}
 

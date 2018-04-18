@@ -17,6 +17,7 @@ import (
 	restclient "k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/apimachinery/pkg/labels"
+	"k8s.io/apimachinery/pkg/fields"
 	"strings"
 )
 
@@ -129,11 +130,12 @@ func main() {
 		log.Fatal("failed to get instance group managers")
 	}
 
-	set := labels.Set(map[string]string{"cloud.google.com/gke-nodepool": nodePoolID})
+	labelSet := labels.Set(map[string]string{"cloud.google.com/gke-nodepool": nodePoolID})
+	fieldSet := fields.Set(map[string]string{"spec.unschedulable": "true"})
 
 	nodes, err := cl.kubeClient.CoreV1().Nodes().List(metav1.ListOptions{
-		LabelSelector:  labels.SelectorFromSet(set).String(),
-		FieldSelector: "spec.unschedulable==true",
+		LabelSelector:  labels.SelectorFromSet(labelSet).String(),
+		FieldSelector: fields.SelectorFromSet(fieldSet).String(),
 	})
 
 	if err != nil {
